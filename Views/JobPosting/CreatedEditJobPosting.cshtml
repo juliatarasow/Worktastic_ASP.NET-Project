@@ -1,0 +1,95 @@
+﻿@model JobPostingModel
+@*enctype="multipart/form-data" -> files dürfen übertragen werden*@
+<form asp-controller="JobPosting" asp-action="CreateEditJob" enctype="multipart/form-data">
+	<div class="card">
+		<div class="card-header">
+			<h4>
+				Inserat anlegen oder bearbeiten
+			</h4>
+		</div>
+
+		<div class="card-body">
+			<div class="row pb-2">
+				<div class="col">
+					<label>
+						Jobtitel
+					</label>
+					<input class="form-control" type="text" placeholder="Jobtitel" asp-for="JobTitle" />
+				</div>
+				<div class="col">
+					<label>
+						Ort
+					</label>
+					<input class="form-control" type="text" placeholder="Ort" asp-for="JobLocation" />
+				</div>
+			</div>
+
+			<div class="row pb-2">
+				<div class="col">
+					<label>
+						Hier bitte eine Beschreibung zum Job eingeben
+					</label>
+					<textarea class="form-control"" asp-for="JobDescription"></textarea>
+				</div>
+			</div>
+
+			<div class="row pb-2">
+				<div class="col">
+					<label>
+						Startdatum
+					</label>
+					<input class="form-control" type="text" placeholder="Startdatum" asp-for="StartDate" />
+				</div>
+				<div class="col">
+					<label>
+						Jahresgehalt
+					</label>
+					<input class="form-control" placeholder="Jahresgehalt" asp-for="Salary" />
+				</div>
+			</div>
+
+			<div class="row pb-2">
+				<div class="col">
+					<label>
+						Firmenbezeichnung
+					</label>
+					<input class="form-control" placeholder="Firmenbezeichnung" asp-for="CompanyName" />
+				</div>
+				<div class="col">
+					<label>
+						Ansprechpartner
+					</label>
+					<input class="form-control" placeholder="Ansprechpartner" asp-for="ContactName" />
+				</div>
+			</div>
+
+			<div class="row pb-2">
+				<div class="col">
+					<label>
+						Kontakt-Email-Adresse
+					</label>
+					<input class="form-control" type="mail" placeholder="Kontakt-Email-Adresse" asp-for="ContactMail" />
+				</div>
+				<div class="col">
+					<label>
+						Firmenwebseite
+					</label>
+					<input class="form-control" type="url" placeholder="Firmenwebseite" asp-for="CompanyWebsite" />
+				</div>
+			</div>
+
+			<div class="col">
+				<label>
+					Firmenlogo
+				</label>
+				<input class="form-control" type="file" asp-for="CompanyImage" name="file" />
+			</div>
+		</div>
+
+		<div class="card-footer">
+			<button class="btn btn-primary" type="submit">
+				Speichern
+			</button>
+		</div>
+	</div>
+</form>
