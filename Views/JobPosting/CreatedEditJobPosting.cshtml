@@ -9,6 +9,7 @@
 		</div>
 
 		<div class="card-body">
+			<input type="hidden" asp-for="Id" />
 			<div class="row pb-2">
 				<div class="col">
 					<label>
@@ -24,12 +25,12 @@
 				</div>
 			</div>
 
-			<div class="row pb-2">
+		<div class="row pb-2">
 				<div class="col">
 					<label>
 						Hier bitte eine Beschreibung zum Job eingeben
 					</label>
-					<textarea class="form-control"" asp-for="JobDescription"></textarea>
+					<textarea class="form-control" asp-for="JobDescription"></textarea>
 				</div>
 			</div>
 
@@ -90,6 +91,6 @@
 			<button class="btn btn-primary" type="submit">
 				Speichern
 			</button>
-		</div>
+		</div>		
 	</div>
 </form>

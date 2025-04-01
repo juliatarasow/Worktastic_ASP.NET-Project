@@ -12,7 +12,7 @@ using Worktastic.Data;
 namespace Worktastic.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250327092948_addedJobPostingTable")]
+    [Migration("20250331131058_addedJobPostingTable")]
     partial class addedJobPostingTable
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace Worktastic.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.5")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -264,6 +264,10 @@ namespace Worktastic.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("JobTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OwnerUsername")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
