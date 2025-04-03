@@ -84,6 +84,11 @@
 					Firmenlogo
 				</label>
 				<input class="form-control" type="file" asp-for="CompanyImage" name="file" />
+				@if (Model.CompanyImage != null)
+				{
+					<p>Aktuelles Firmenlogo:</p>
+					<img src="data:image/png;base64,@Convert.ToBase64String(Model.CompanyImage)" width="200" />
+				}
 			</div>
 		</div>
 

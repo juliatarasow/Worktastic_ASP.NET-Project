@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SQLitePCL;
 using Worktastic.Data;
 using Worktastic.Models;
 
 namespace Worktastic.Controllers
 {
+    [Authorize]
     public class JobPostingController : Controller
-    {   
+    {
         //Instanz des Datenbank-Kontexts
         private readonly ApplicationDbContext _context;
 
@@ -24,7 +26,15 @@ namespace Worktastic.Controllers
         //bearbeiten
         public IActionResult CreatedEditJobPosting(int id)
         {
+            if (id == 0) return View();
+
+            //var jobPosting = _context.JobPostings.SingleOrDefault(x => x.Id == id);
             var jobPosting = _context.JobPostings.Find(id); // Annahme: _context ist dein Datenkontext
+            if (jobPosting.OwnerUsername != User.Identity.Name)
+            {
+                return Unauthorized();
+            }
+
             if (jobPosting == null)
             {
                 return NotFound();
@@ -48,30 +58,32 @@ namespace Worktastic.Controllers
                     jobPostingModel.CompanyImage = ms.ToArray();
                 }
             }
-
-            // Überprüfen, ob die Jobanzeige bereits existiert
-            var existingJob = _context.JobPostings.Find(jobPostingModel.Id);
-            if (existingJob != null)
+                       
+            if (jobPostingModel.Id == 0)
             {
-                // Bestehenden Eintrag überschreiben
-                existingJob.JobTitle = jobPostingModel.JobTitle;
-                existingJob.JobDescription = jobPostingModel.JobDescription;
-                existingJob.Salary = jobPostingModel.Salary;
-                existingJob.JobLocation = jobPostingModel.JobLocation;
-                existingJob.CompanyName = jobPostingModel.CompanyName;
+                _context.JobPostings.Add(jobPostingModel);
+            }
+            else 
+            {
+                var existingJob = _context.JobPostings.Find(jobPostingModel.Id);
 
-                // Falls eine neue Datei hochgeladen wurde, ersetze das Bild
+                if (existingJob == null) return NotFound();
+
+                //if (jobPostingModel.CompanyImage != null)
                 if (file != null)
                 {
                     existingJob.CompanyImage = jobPostingModel.CompanyImage;
                 }
 
-                _context.JobPostings.Update(existingJob);
-            }
-            else
-            {
-                // Falls nein, erstelle eine neue Anzeige
-                _context.JobPostings.Add(jobPostingModel);
+                existingJob.JobTitle = jobPostingModel.JobTitle;
+                existingJob.JobDescription = jobPostingModel.JobDescription;
+                existingJob.JobLocation = jobPostingModel.JobLocation;
+                existingJob.StartDate = jobPostingModel.StartDate;
+                existingJob.Salary = jobPostingModel.Salary;
+                existingJob.CompanyName = jobPostingModel.CompanyName;
+                existingJob.ContactName = jobPostingModel.ContactName;
+                existingJob.ContactMail = jobPostingModel.ContactMail;
+                existingJob.CompanyWebsite = jobPostingModel.CompanyWebsite;           
             }
 
             // Speichern der Änderungen in der Datenbank
@@ -102,6 +114,7 @@ namespace Worktastic.Controllers
               return RedirectToAction("Index");
           }*/
 
+        [HttpPost]
         public IActionResult DeleteJobPosting(int id)
         {
             var job = _context.JobPostings.Find(id);
