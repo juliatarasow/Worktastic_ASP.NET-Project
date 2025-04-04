@@ -93,27 +93,6 @@ namespace Worktastic.Controllers
             return RedirectToAction("Index", "JobPosting");
         }
 
-
-        /*  public IActionResult CreateEditJob(JobPostingModel jobPostingModel, IFormFile file)
-          {
-              //beim Speichern übergeben
-              jobPostingModel.OwnerUsername = User.Identity.Name;
-
-              if (file != null)
-              {
-                  using (var ms = new MemoryStream())
-                  {
-                      file.CopyTo(ms);
-                      var bytes = ms.ToArray();
-                      jobPostingModel.CompanyImage = bytes;
-                  }
-              }
-              _context.JobPostings.Add(jobPostingModel);
-              _context.SaveChanges();
-
-              return RedirectToAction("Index");
-          }*/
-
         [HttpPost]
         public IActionResult DeleteJobPosting(int id)
         {
