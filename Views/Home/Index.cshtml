@@ -10,4 +10,66 @@
     </div>
 </div>
 
-@await Html.PartialAsync("_JobPostingsTable", Model)
+@* @await Html.PartialAsync("_JobPostingsTable", Model) *@
+
+<!--hier kommt ein JobModal-->
+<div id="jobModal" class="modal fade" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <img id="modalImage" class="img-fluid " src="#" alt="Firmenlogo" />
+        <h5 id="jobTitle" class="modal-title"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p id="jobDescription"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="list-group">
+    @foreach(JobPostingModel jobPosting in Model)
+    {
+        <a href="#" onclick="showJobModal(@jobPosting.Id)" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">
+                    @jobPosting.JobTitle
+                </h5>
+                <small>
+                    @jobPosting.JobLocation
+                </small>
+            </div>
+            <p class="mb-1">
+                Firma: @jobPosting.CompanyName
+            </p>
+            <p class="mb-1">
+                Email: @jobPosting.ContactMail       
+            </p>
+            <small>
+                Starttermin: @jobPosting.StartDate.ToLongDateString()
+            </small>
+        </a>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function showJobModal(id) {
+            $.ajax({ //ich übergebe ein Objekt
+                type: "GET",
+                url: "@Url.Action("GetJobPosting")",
+                data: {id: id},
+                success: function (data){ //wenn Funktion nur ein Mal aufgerufen wird, braucht sie keinen Namen    
+                    $('#jobModal').modal('show');
+                    $('#modalImage').attr('src', `data:image/png;base64,${data.companyImage}`);
+                    $('#jobTitle').text(data.jobTitle);
+                    $('#jobDescription').text(data.jobDescription);
+                    
+                }      
+            })
+            $('#jobTitle').text("hier kommt der JobTitle rein aus der DB")
+            $('#jobModal').modal('show')
+        }
+    </script>
+}
