@@ -6,7 +6,7 @@ using Worktastic.Models;
 
 namespace Worktastic.Controllers
 {
-    [Authorize]
+    
     public class JobPostingController : Controller
     {
         //Instanz des Datenbank-Kontexts
@@ -16,13 +16,14 @@ namespace Worktastic.Controllers
         {            
             _context = context; //_context -> private Variable
         }
-
+        [Authorize]
         public IActionResult Index()
         {
             var jobPostingsFromDb = _context.JobPostings.Where(x => x.OwnerUsername == User.Identity.Name).ToList();
             return View(jobPostingsFromDb);
         }
 
+        [Authorize]
         //bearbeiten
         public IActionResult CreatedEditJobPosting(int id)
         {
@@ -43,6 +44,7 @@ namespace Worktastic.Controllers
             return View(jobPosting); // Zeige nur das spezifische JobPosting
         }
 
+        [Authorize]
         public IActionResult CreateEditJob(JobPostingModel jobPostingModel, IFormFile file)
         {
 
@@ -103,6 +105,17 @@ namespace Worktastic.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+
+        [AllowAnonymous]
+        public IActionResult JobPostingDetails(int id)
+        {
+            var jobPostingFromDb = _context.JobPostings.Find(id);
+            if (jobPostingFromDb == null)
+            {
+                return NotFound();
+            }
+            return View(jobPostingFromDb);
         }
     }
 }

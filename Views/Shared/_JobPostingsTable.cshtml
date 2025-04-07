@@ -1,6 +1,6 @@
-﻿@model IEnumerable<Worktastic.Models.JobPostingModel>
+﻿@model List<JobPostingModel>
 
- <table id="adminTable" class="table py-3">
+ <table id="adminTable" class="table my-3">
         <thead>
             <tr>
                 <th scope="col">#</th>
@@ -31,11 +31,18 @@
                         <td>@jobPostingModel.Salary €</td>
                         <td>@jobPostingModel.OwnerUsername</td>
                         <td>
-                    @*a == GET-Methode*@
-                            <a class="btn btn-primary btn-sm me-3" asp-controller="JobPosting" asp-action="CreatedEditJobPosting" asp-route-id="@jobPostingModel.Id">Bearbeiten</a>
-                    @*button == POST-Methode*@
-                            <button class="btn btn-outline-danger btn-sm" onclick="deleteJobPosting(@jobPostingModel.Id)">Löschen</button>
-                        </td>
+                            @if(User.Identity.IsAuthenticated)
+                            {
+                                @*a == GET-Methode*@
+                                <a class="btn btn-primary btn-sm me-3" asp-controller="JobPosting" asp-action="CreatedEditJobPosting" asp-route-id="@jobPostingModel.Id">Bearbeiten</a>
+                                @*button == POST-Methode*@
+                                <button class="btn btn-outline-danger btn-sm" onclick="deleteJobPosting(@jobPostingModel.Id)">Löschen</button>
+                            }
+                            else
+                            {
+                                        <a class="btn btn-primary btn-sm me-3" asp-controller="JobPosting" asp-action="JobPostingDetails" asp-route-id="@jobPostingModel.Id">Mehr anzeigen</a>
+                            }
+                </td>
                     </tr>
         }
         </tbody>
