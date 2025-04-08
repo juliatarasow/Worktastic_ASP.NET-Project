@@ -1,6 +1,6 @@
 ﻿@model List<JobPostingModel>
 
- <table id="adminTable" class="table my-3">
+ <table id="adminTable" class="table">
         <thead>
             <tr>
                 <th scope="col">#</th>
@@ -49,62 +49,9 @@
     </table> 
 
 @section Scripts
-    {
-            <script>
-                      $(document).ready(function () {
-                          var table = $('#adminTable').DataTable({
-                            pagingType: "full_numbers",
-                            language: {
-                              search: "Suche:",
-                              lengthMenu: "Zeige _MENU_ Einträge"
-                            },
-                            // Hier fügst du die Bootstrap-Klasse für eine Bootstrap-Tabelle hinzu
-                            dom: 'Bfrtip', // Zum Hinzufügen von Bootstrap-Buttons (optional)
-                            buttons: [
-                              'copy', 'csv', 'excel', 'pdf', 'print' // Optional: Buttons für Export-Optionen
-                            ],
-                            // Hiermit wird die Bootstrap-Klasse für die Tabelle gesetzt
-                            responsive: true,
-                            "paging": true,
-                            "lengthChange": true,
-                            "searching": true,
-                            "ordering": true,
-                            "info": true,
-                            "autoWidth": false
-                          });
-                        });
-
-                function deleteJobPosting(jobPostingId) {
-                    Swal.fire({
-                        title: "Wollen Sie wirklich den Eintrag löschen?",
-                        showCancelButton: true,
-                        icon: "warning",
-                        iconColor: "#dc3545",
-                        confirmButtonText: "Ja, löschen!",
-                        cancelButtonText: "Abbrechen",
-                        confirmButtonColor: "#dc3545",
-                        cancelButtonColor: "#007bff"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                type: "POST",
-                                url: "@Url.Action("DeleteJobPosting")",
-                                data: { id: jobPostingId },
-                                success: function (msg) {
-                                    Swal.fire("Eintrag gelöscht", "", "success").then((result) => {
-                                        location.reload();
-                                    });
-                                },
-                                error: function (msg) {
-                                    Swal.fire("Ups, irgendetwas ist schiefgelaufen!", "", "error");
-                                }
-                            });
-                            } 
-                            else 
-                            {
-                                console.log("Löschen abgebrochen.");
-                            }
-                    });
-                }
-            </script>
+{
+    <script>
+        const deleteJobPostingUrl = '@Url.Action("DeleteJobPosting", "JobPosting")';
+    </script>
+    <script src="~/js/site.js"></script>
 }
