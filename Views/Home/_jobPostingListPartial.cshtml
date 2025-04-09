@@ -1,0 +1,26 @@
+﻿@model List<JobPostingModel>
+
+<div class="list-group">
+    @foreach (JobPostingModel jobPosting in Model)
+    {
+            <a href="#" onclick="showJobModal(@jobPosting.Id)" class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">
+                    @jobPosting.JobTitle
+                    </h5>
+                    <small>
+                    @jobPosting.JobLocation
+                    </small>
+                </div>
+                <p class="mb-1">
+                    Firma: @jobPosting.CompanyName
+                </p>
+                <p class="mb-1">
+                    Email: @jobPosting.ContactMail       
+                </p>
+                <small>
+                    Starttermin: @jobPosting.StartDate.ToLongDateString()
+                </small>
+            </a>
+    }
+</div>
