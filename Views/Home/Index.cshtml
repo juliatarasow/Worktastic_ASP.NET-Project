@@ -12,34 +12,12 @@
 
 <div class="w-25 my-3">
     <form class="d-flex">
-      <input class="form-control me-2" type="search" placeholder="Suche" aria-label="Suche">
-      <button class="btn btn-outline-primary" type="submit">Suche</button>
+      <input id="inputQuery" class="form-control me-2" type="search" placeholder="Suche" aria-label="Suche">
+      <button onclick="onClickSearch()" class="btn btn-outline-primary" type="submit">Suche</button>
     </form>
   </div>
-<div class="list-group">
-    @foreach(JobPostingModel jobPosting in Model)
-    {
-        <a href="#" onclick="showJobModal(@jobPosting.Id)" class="list-group-item list-group-item-action flex-column align-items-start">
-            <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">
-                    @jobPosting.JobTitle
-                </h5>
-                <small>
-                    @jobPosting.JobLocation
-                </small>
-            </div>
-            <p class="mb-1">
-                Firma: @jobPosting.CompanyName
-            </p>
-            <p class="mb-1">
-                Email: @jobPosting.ContactMail       
-            </p>
-            <small>
-                Starttermin: @jobPosting.StartDate.ToLongDateString()
-            </small>
-        </a>
-    }
-</div>
+
+  <div id="jobPostingListPartial"></div>
 
 <!--hier kommt ein JobModal-->
 <div id="jobModal" class="modal fade" tabindex="-1">
@@ -53,10 +31,10 @@
             </div>
             <h5 id="jobTitle" class="modal-title text-wrap"></h5>
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between">
             <p id="startDate"></p>
             <p id="jobLocation"></p>
         </div>
@@ -74,12 +52,25 @@
 
 @section Scripts {
     <script>
+        $('#jobPostingListPartial').load("/home/GetJobPostingPartial");
+
+        $('#inputQuery').on('input', function () {
+            const query = $(this).val().toLowerCase();
+            onClickSearch(query);
+        })
+
+        function onClickSearch() {
+            event.preventDefault();
+            var searchQuery = $('#inputQuery').val();
+            $('#jobPostingListPartial').load("/home/GetJobPostingPartial?query=" + encodeURIComponent(searchQuery));
+        }
+
         function showJobModal(id) {
             $.ajax({ //ich übergebe ein Objekt
                 type: "GET",
                 url: "@Url.Action("GetJobPosting")",
                 data: {id: id},
-                success: function (data){ //wenn Funktion nur ein Mal aufgerufen wird, braucht sie keinen Namen    
+                success: function (data){ //wenn Funktion nur ein Mal aufgerufen wird, braucht sie keinen Namen
                     $('#jobModal').modal('show');
                     $('#modalImage').attr('src', `data:image/png;base64,${data.companyImage}`);
                     $('#companyName').text(data.companyName);
@@ -87,10 +78,10 @@
                     $('#jobLocation').text(data.jobLocation);
                     $('#jobTitle').text(data.jobTitle);
                     $('#jobDescription').text(data.jobDescription);
-                    $('#companyWebsite').text(data.companyWebsite);  
+                    $('#companyWebsite').text(data.companyWebsite);
                     $('#contactMail').text(data.contactMail);
                     $('#contactName').text(data.contactName);
-                }      
+                }
             })
             $('#jobModal').modal('show')
         }
