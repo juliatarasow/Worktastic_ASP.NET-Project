@@ -54,6 +54,11 @@
     <script>
         $('#jobPostingListPartial').load("/home/GetJobPostingPartial");
 
+        $('#inputQuery').on('input', function () {
+            const query = $(this).val().toLowerCase();
+            onClickSearch(query);
+        })
+
         function onClickSearch() {
             event.preventDefault();
             var searchQuery = $('#inputQuery').val();

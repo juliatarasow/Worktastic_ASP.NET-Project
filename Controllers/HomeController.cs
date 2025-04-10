@@ -80,7 +80,15 @@ namespace Worktastic.Controllers
         {
             if(string.IsNullOrEmpty(s))
             {
-                return string.IsNullOrEmpty(t) ? 0 : t.Length;
+                //return string.IsNullOrEmpty(t) ? 0 : t.Length;
+                if (string.IsNullOrEmpty(t))
+                {
+                    return 0;
+                }
+                else
+                {
+                    return t.Length;
+                }
             }
 
             if(string.IsNullOrEmpty(t))
@@ -100,6 +108,8 @@ namespace Worktastic.Controllers
             {
                 return shortcut;
             }
+
+            
 
             int[,] matrix = new int[s.Length + 1, t.Length + 1];
 
@@ -129,7 +139,7 @@ namespace Worktastic.Controllers
                         );
                 }
             }
-
+          
             return matrix[s.Length, t.Length];
         }
 
