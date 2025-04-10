@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Worktastic.Data;
 using Worktastic.Models;
@@ -141,6 +142,18 @@ namespace Worktastic.Controllers
             }
           
             return matrix[s.Length, t.Length];
+        }
+
+        //einzelnen Job raussuchen aus DB für das Modal
+        [HttpGet]
+        public IActionResult GetJobPosting(int id) 
+        {
+            if (id == 0) return BadRequest();
+
+            var JobPostingFromDB = _context.JobPostings.SingleOrDefault(x => x.Id == id);
+            if(JobPostingFromDB == null) return NotFound();
+
+            return Ok(JobPostingFromDB);
         }
 
         public IActionResult Privacy()
