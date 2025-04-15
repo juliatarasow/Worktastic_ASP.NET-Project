@@ -1,6 +1,9 @@
 ﻿@model JobPostingModel
 @*enctype="multipart/form-data" -> files dürfen übertragen werden*@
 <form asp-controller="JobPosting" asp-action="CreateEditJob" enctype="multipart/form-data">
+	<a asp-controller="JobPosting" asp-action="Index">
+		<svg class="icon ps-1 mb-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
+	</a>
 	<div class="card">
 		<div class="card-header">
 			<h4>
@@ -97,9 +100,10 @@
 		</div>
 
 		<div class="card-footer">
-			<button class="btn btn-primary" type="submit">
+			<button class="btn btn-primary  me-3" type="submit">
 				Speichern
 			</button>
+			<a class="btn btn-outline-danger" asp-controller="JobPosting" asp-action="Index">Abbrechen</a>
 		</div>		
 	</div>
 </form>
