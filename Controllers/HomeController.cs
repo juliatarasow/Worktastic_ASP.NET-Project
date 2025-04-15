@@ -21,8 +21,35 @@ namespace Worktastic.Controllers
 
         public IActionResult Index()
         {
-            // Hole die JobPostings-Daten
-            var jobPostingsFromDb = _context.JobPostings.ToList();
+            return View();
+        }
+
+        //einzelnen Job raussuchen aus DB für das Modal
+        //[HttpGet]
+        //public IActionResult GetJobPosting(int id) 
+        //{
+        //    if (id == 0) return BadRequest();
+
+        //    var JobPostingFromDB = _context.JobPostings.SingleOrDefault(x => x.Id == id);
+        //    if(JobPostingFromDB == null) return NotFound();
+
+        //    return Ok(JobPostingFromDB);
+        //}
+
+        public IActionResult GetJobPostingPartial(string query)
+        {
+            List<JobPostingModel> jobPostingsFromDb = new List<JobPostingModel>();
+
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                // Hole die JobPostings-Daten
+                jobPostingsFromDb = _context.JobPostings.ToList();
+            }
+            else
+            {
+                string searchQuery = query.ToLower().Replace(" ", "");
+                DateTime.TryParse(query, out DateTime parsedDate);
+                int maxDistance = 2;
 
                 // Hole alle JobPostings
                 jobPostingsFromDb = _context.JobPostings.ToList();
@@ -115,6 +142,30 @@ namespace Worktastic.Controllers
             }
           
             return matrix[s.Length, t.Length];
+        }
+
+        //einzelnen Job raussuchen aus DB für das Modal
+        //[HttpGet]
+        //public IActionResult GetJobPosting(int id) 
+        //{
+        //    if (id == 0) return BadRequest();
+
+        //    var JobPostingFromDB = _context.JobPostings.SingleOrDefault(x => x.Id == id);
+        //    if(JobPostingFromDB == null) return NotFound();
+
+        //    return Ok(JobPostingFromDB);
+        //}
+
+        //einzelnen Job raussuchen aus DB für das Modal
+        [HttpGet]
+        public IActionResult GetJobPosting(int id) 
+        {
+            if (id == 0) return BadRequest();
+
+            var JobPostingFromDB = _context.JobPostings.SingleOrDefault(x => x.Id == id);
+            if(JobPostingFromDB == null) return NotFound();
+
+            return Ok(JobPostingFromDB);
         }
 
         public IActionResult Privacy()

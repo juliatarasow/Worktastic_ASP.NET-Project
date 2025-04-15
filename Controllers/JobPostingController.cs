@@ -14,7 +14,7 @@ namespace Worktastic.Controllers
         {            
             _context = context; //_context -> private Variable
         }
-        
+        //[Authorize]
         public IActionResult Index()
         {
             //Admin sieht alles von jedem
@@ -28,7 +28,8 @@ namespace Worktastic.Controllers
             return View(jobPostingsFromDb);
         }
 
-        //JobPostings bearbeiten
+        //[Authorize]
+        //bearbeiten
         public IActionResult CreatedEditJobPosting(int id)
         {
             if (id == 0) return View();
@@ -49,7 +50,7 @@ namespace Worktastic.Controllers
             return View(jobPosting); 
         }
 
-       
+        //[Authorize]
         public IActionResult CreateEditJob(JobPostingModel jobPostingModel, IFormFile file)
         {
 
@@ -111,6 +112,7 @@ namespace Worktastic.Controllers
             return RedirectToAction("Index");
         }
 
+        //[AllowAnonymous]
         public IActionResult JobPostingDetails(int id)
         {
             var jobPostingFromDb = _context.JobPostings.Find(id);
