@@ -25,16 +25,16 @@ namespace Worktastic.Controllers
         }
 
         //einzelnen Job raussuchen aus DB für das Modal
-        [HttpGet]
-        public IActionResult GetJobPosting(int id) 
-        {
-            if (id == 0) return BadRequest();
+        //[HttpGet]
+        //public IActionResult GetJobPosting(int id) 
+        //{
+        //    if (id == 0) return BadRequest();
 
-            var JobPostingFromDB = _context.JobPostings.SingleOrDefault(x => x.Id == id);
-            if(JobPostingFromDB == null) return NotFound();
+        //    var JobPostingFromDB = _context.JobPostings.SingleOrDefault(x => x.Id == id);
+        //    if(JobPostingFromDB == null) return NotFound();
 
-            return Ok(JobPostingFromDB);
-        }
+        //    return Ok(JobPostingFromDB);
+        //}
 
         public IActionResult GetJobPostingPartial(string query)
         {
@@ -145,16 +145,16 @@ namespace Worktastic.Controllers
         }
 
         //einzelnen Job raussuchen aus DB für das Modal
-        [HttpGet]
-        public IActionResult GetJobPosting(int id) 
-        {
-            if (id == 0) return BadRequest();
+        //[HttpGet]
+        //public IActionResult GetJobPosting(int id) 
+        //{
+        //    if (id == 0) return BadRequest();
 
-            var JobPostingFromDB = _context.JobPostings.SingleOrDefault(x => x.Id == id);
-            if(JobPostingFromDB == null) return NotFound();
+        //    var JobPostingFromDB = _context.JobPostings.SingleOrDefault(x => x.Id == id);
+        //    if(JobPostingFromDB == null) return NotFound();
 
-            return Ok(JobPostingFromDB);
-        }
+        //    return Ok(JobPostingFromDB);
+        //}
 
         //einzelnen Job raussuchen aus DB für das Modal
         [HttpGet]

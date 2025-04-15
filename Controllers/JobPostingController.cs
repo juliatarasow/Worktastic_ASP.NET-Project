@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SQLitePCL;
+﻿using Microsoft.AspNetCore.Mvc;
 using Worktastic.Data;
 using Worktastic.Models;
 
 namespace Worktastic.Controllers
 {
-    [Authorize]
+    
     public class JobPostingController : Controller
     {
         //Instanz des Datenbank-Kontexts
@@ -16,21 +14,28 @@ namespace Worktastic.Controllers
         {            
             _context = context; //_context -> private Variable
         }
-
+        
         public IActionResult Index()
         {
+            //Admin sieht alles von jedem
+            if(User.IsInRole("Admin"))
+            {
+                var allPosrings = _context.JobPostings.ToList();
+                return View(allPosrings);
+            }
+
             var jobPostingsFromDb = _context.JobPostings.Where(x => x.OwnerUsername == User.Identity.Name).ToList();
             return View(jobPostingsFromDb);
         }
 
-        //bearbeiten
+        //JobPostings bearbeiten
         public IActionResult CreatedEditJobPosting(int id)
         {
             if (id == 0) return View();
 
             //var jobPosting = _context.JobPostings.SingleOrDefault(x => x.Id == id);
             var jobPosting = _context.JobPostings.Find(id); // Annahme: _context ist dein Datenkontext
-            if (jobPosting.OwnerUsername != User.Identity.Name)
+            if (jobPosting.OwnerUsername != User.Identity.Name && !User.IsInRole("Admin"))
             {
                 return Unauthorized();
             }
@@ -40,7 +45,8 @@ namespace Worktastic.Controllers
                 return NotFound();
             }
 
-            return View(jobPosting); // Zeige nur das spezifische JobPosting
+            // Zeige nur das spezifische JobPosting
+            return View(jobPosting); 
         }
 
         public IActionResult CreateEditJob(JobPostingModel jobPostingModel, IFormFile file)
@@ -68,9 +74,8 @@ namespace Worktastic.Controllers
                 var existingJob = _context.JobPostings.Find(jobPostingModel.Id);
 
                 if (existingJob == null) return NotFound();
-
-                //if (jobPostingModel.CompanyImage != null)
-                if (file != null)
+                
+                if (file != null) //if (jobPostingModel.CompanyImage != null)
                 {
                     existingJob.CompanyImage = jobPostingModel.CompanyImage;
                 }
@@ -83,7 +88,7 @@ namespace Worktastic.Controllers
                 existingJob.CompanyName = jobPostingModel.CompanyName;
                 existingJob.ContactName = jobPostingModel.ContactName;
                 existingJob.ContactMail = jobPostingModel.ContactMail;
-                existingJob.CompanyWebsite = jobPostingModel.CompanyWebsite;           
+                //existingJob.CompanyWebsite = jobPostingModel.CompanyWebsite;           
             }
 
             // Speichern der Änderungen in der Datenbank
@@ -103,6 +108,16 @@ namespace Worktastic.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+
+        public IActionResult JobPostingDetails(int id)
+        {
+            var jobPostingFromDb = _context.JobPostings.Find(id);
+            if (jobPostingFromDb == null)
+            {
+                return NotFound();
+            }
+            return View(jobPostingFromDb);
         }
     }
 }

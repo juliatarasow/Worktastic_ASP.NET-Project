@@ -19,14 +19,13 @@
                         <th>@jobPostingModel.Id</th>
                         <td>@jobPostingModel.JobTitle</td>
                         <td>
-                    @jobPostingModel.CompanyName
-                    @if (jobPostingModel.CompanyImage != null)
-                    {
-                                    <img src="data:image/png;base64,
-                                 @Convert.ToBase64String(jobPostingModel.CompanyImage)" 
-                                         style="width:auto;height:30px;" />
-                    }
-                            </td>
+                            @jobPostingModel.CompanyName
+                            @if (jobPostingModel.CompanyImage != null)
+                            {
+                                            <img src="data:image/png;base64,@Convert.ToBase64String(jobPostingModel.CompanyImage)" 
+                                                 class="logo-small" />
+                            }
+                        </td>
                         <td>@jobPostingModel.StartDate.ToShortDateString()</td>
                         <td>@jobPostingModel.Salary €</td>
                         <td>@jobPostingModel.OwnerUsername</td>

@@ -20,3 +20,20 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.login-link-group > p {
+    margin-bottom: 0;
+}
+
+.logo-small {
+    margin-right: 1rem;
+    object-fit: scale-down;
+    position: relative;
+    width: 3rem;
+    height: 3rem;
+}
+
+.icon {
+    height: 1.5rem;
+    fill:gray;
+}
