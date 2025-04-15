@@ -49,7 +49,7 @@ namespace Worktastic.Controllers
             return View(jobPosting); 
         }
 
-        [Authorize]
+       
         public IActionResult CreateEditJob(JobPostingModel jobPostingModel, IFormFile file)
         {
 

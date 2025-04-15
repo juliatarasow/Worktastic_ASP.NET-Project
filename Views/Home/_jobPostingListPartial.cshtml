@@ -3,43 +3,41 @@
 <div class="container">
     <div class="row">
         <div class="col">
-        <div class="list-group">
+            <div class="list-group">
                 @foreach (JobPostingModel jobPosting in Model)
                 {
-            <a href="#" onclick="showJobModal(@jobPosting.Id)" class="list-group-item list-group-item-action d-flex align-items-start justify-content-between">
-            <div class="d-flex">
-                <div class="flex-shrink-0">
-                                      <img src="data:image/png;base64,@Convert.ToBase64String(jobPosting.CompanyImage)" 
-                              class="logo-small" />
-                </div>
+                    <a href="#" onclick="showJobModal(@jobPosting.Id)" class="list-group-item list-group-item-action d-flex align-items-start justify-content-between">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <img src="data:image/png;base64,@Convert.ToBase64String(jobPosting.CompanyImage)" class="logo-small" />
+                            </div>
 
-                <div class="flex-grow-1">
-                              <h5 class="mb-1">
+                            <div class="flex-grow-1">
+                                <h5 class="mb-1">
                                     @jobPosting.JobTitle
-                            </h5>
-                    <small>
-                    @jobPosting.JobLocation
-                    </small>
-                </div>
-                              <p class="mb-1">
-                                    @jobPosting.CompanyName
-                        </p>
-                        <p class="mb-1">
-                                    @jobPosting.ContactMail       
-                        </p>
-                        <small>
-                                    @jobPosting.StartDate.ToLongDateString()
-                        </small>
-                    </div>
-                </div>
-                <div>
-                    <small>
+                                </h5>
+                                <small>
+                                    @jobPosting.JobLocation
+                                </small>
+                            </div>
+                            <p class="mb-1">
+                                @jobPosting.CompanyName
+                            </p>
+                            <p class="mb-1">
+                                @jobPosting.ContactMail       
+                            </p>
+                            <small>
+                                @jobPosting.StartDate.ToLongDateString()
+                            </small>
+                        </div>
+                        <div>
+                            <small>
                                 @jobPosting.JobLocation
-                    </small>
-                </div>
-            </a>
+                            </small>
+                        </div>
+                    </a>
                 }
-</div>
+            </div>
         </div>
         <div class="col">
 
