@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "Stellenanzeige";
+}
+
+@model Worktastic.Models.JobPostingModel
+
+
+              <div class="job-details">
+        <div id="" class="d-flex pt-3">
+                @if (Model.CompanyImage != null)
+                {
+                    var base64Image = Convert.ToBase64String(Model.CompanyImage);
+                    var imageSrc = $"data:image/png;base64,{base64Image}";
+                    <img src="@imageSrc" alt="Logo von @Model.CompanyName" style="width:auto;height:30px;" class="me-2"/>
+                }
+        <p>@Model.CompanyName</p>
+    </div>
+
+    <h2 id="" class="mb-3">@Model.JobTitle</h2>
+
+    <div>
+
+        <p id=""><strong>Standort:</strong> @Model.JobLocation</p>
+        <p id=""><strong>Startdatum:</strong> @Model.StartDate.ToString("dd.MM.yyyy")</p>
+        <p><strong>Gehalt:</strong> @Model.Salary.ToString("C")</p>
+
+        <p><strong>Beschreibung:</strong></p>
+        <p>@Model.JobDescription</p>
+
+        <hr />
+
+        <p><strong>Kontaktperson:</strong> @Model.ContactName</p>
+        <p><strong>E-Mail:</strong> <a href="mailto:@Model.ContactMail">@Model.ContactMail</a></p>
+
+                @if (!string.IsNullOrEmpty(Model.CompanyWebsite))
+                {
+                        <p><strong>Webseite:</strong> <a href="@Model.CompanyWebsite" target="_blank">@Model.CompanyWebsite</a></p>
+                }
+
+
+
+        <hr />
+
+                @if (User.Identity.IsAuthenticated && User.Identity.Name == Model.OwnerUsername)
+                {
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary">Bearbeiten</a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Löschen</a>
+                }
+                else
+                {
+                        <a href="mailto:@Model.ContactMail?subject=Bewerbung%20auf%20@Model.JobTitle" class="btn btn-primary">
+                            Jetzt bewerben
+                        </a>
+                }
+    </div>
+    </div>
+
+
+
+
+

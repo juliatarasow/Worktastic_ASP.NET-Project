@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Worktastic.Data;
 using Worktastic.Models;
 
@@ -9,12 +10,14 @@ namespace Worktastic.Controllers
     {
         //Instanz des Datenbank-Kontexts
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnviroment;
 
-        public JobPostingController(ApplicationDbContext context) //Datenbank-Kontext von ASP.NET Core Dependency Injection - Überbabe
+        public JobPostingController(ApplicationDbContext context, IWebHostEnvironment webHostEnviroment) //Datenbank-Kontext von ASP.NET Core Dependency Injection - Überbabe
         {            
             _context = context; //_context -> private Variable
+            _webHostEnviroment = webHostEnviroment;
         }
-        //[Authorize]
+
         public IActionResult Index()
         {
             //Admin sieht alles von jedem
@@ -28,8 +31,38 @@ namespace Worktastic.Controllers
             return View(jobPostingsFromDb);
         }
 
-        //[Authorize]
-        //bearbeiten
+        ////einzelnen Job raussuchen aus DB für das Modal
+        //[HttpGet]
+        //public IActionResult GetJobPosting(int id)
+        //{
+        //    if (id == 0) return BadRequest();
+
+        //    var JobPostingFromDB = _context.JobPostings.SingleOrDefault(x => x.Id == id);
+        //    if (JobPostingFromDB == null) return NotFound();
+
+        //    return Ok(JobPostingFromDB);
+        //}
+
+        public IActionResult GetJobPosting(int id)
+        {
+            var posting = _context.JobPostings.FirstOrDefault(j => j.Id == id);
+            if (posting == null)
+                return NotFound();
+
+            return PartialView("_JobPostingDetailsPartial", posting);
+        }
+
+        //public IActionResult JobPostingDetails(int id)
+        //{
+        //    var job = _context.JobPostings.FirstOrDefault(j => j.Id == id);
+        //    if (job == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return PartialView("_JobPostingDetailsPartial", job);
+        //}
+
+        //Jobposting bearbeiten
         public IActionResult CreatedEditJobPosting(int id)
         {
             if (id == 0) return View();
@@ -50,12 +83,12 @@ namespace Worktastic.Controllers
             return View(jobPosting); 
         }
 
-        //[Authorize]
         public IActionResult CreateEditJob(JobPostingModel jobPostingModel, IFormFile file)
         {
 
             // Den aktuellen Benutzer als Besitzer der Anzeige speichern
             jobPostingModel.OwnerUsername = User.Identity.Name;
+            byte[] uploadedLogo = null;
 
             // Falls eine Datei hochgeladen wurde, speichere sie als Byte-Array
             if (file != null)
@@ -63,12 +96,22 @@ namespace Worktastic.Controllers
                 using (var ms = new MemoryStream())
                 {
                     file.CopyTo(ms);
-                    jobPostingModel.CompanyImage = ms.ToArray();
+                    uploadedLogo = ms.ToArray();
+                }
+            }
+            else
+            {
+                var placeholderPath = Path.Combine(_webHostEnviroment.WebRootPath, "images", "placeholder-logo.png");
+
+                if (System.IO.File.Exists(placeholderPath))
+                {
+                    uploadedLogo = System.IO.File.ReadAllBytes(placeholderPath);
                 }
             }
                        
             if (jobPostingModel.Id == 0)
             {
+                jobPostingModel.CompanyImage = uploadedLogo;
                 _context.JobPostings.Add(jobPostingModel);
             }
             else 
@@ -79,7 +122,7 @@ namespace Worktastic.Controllers
                 
                 if (file != null) //if (jobPostingModel.CompanyImage != null)
                 {
-                    existingJob.CompanyImage = jobPostingModel.CompanyImage;
+                    existingJob.CompanyImage = uploadedLogo;
                 }
 
                 existingJob.JobTitle = jobPostingModel.JobTitle;
@@ -90,7 +133,7 @@ namespace Worktastic.Controllers
                 existingJob.CompanyName = jobPostingModel.CompanyName;
                 existingJob.ContactName = jobPostingModel.ContactName;
                 existingJob.ContactMail = jobPostingModel.ContactMail;
-                //existingJob.CompanyWebsite = jobPostingModel.CompanyWebsite;           
+                existingJob.CompanyWebsite = jobPostingModel.CompanyWebsite;           
             }
 
             // Speichern der Änderungen in der Datenbank
@@ -112,15 +155,16 @@ namespace Worktastic.Controllers
             return RedirectToAction("Index");
         }
 
-        //[AllowAnonymous]
-        public IActionResult JobPostingDetails(int id)
-        {
-            var jobPostingFromDb = _context.JobPostings.Find(id);
-            if (jobPostingFromDb == null)
-            {
-                return NotFound();
-            }
-            return View(jobPostingFromDb);
-        }
+        //public IActionResult JobPostingDetails(int id)
+        //{
+        //    var jobPostingFromDb = _context.JobPostings.Find(id);
+        //    if (jobPostingFromDb == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return View(jobPostingFromDb);
+        //}
+
+        
     }
 }

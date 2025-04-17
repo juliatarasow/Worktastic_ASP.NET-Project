@@ -4,29 +4,34 @@
 
 @model List<JobPostingModel>
 
-<div class="text-center">
+@* <div class="text-center">
     <div class="jumbotron jumbotron-fluid bg-primary py-5">
         <h1 class="text-white display-2">Worktastic</h1>
     </div>
-</div>
+</div> *@
 
-<div class="w-25 my-3">
-    <form class="d-flex">
-      <input id="inputQuery" class="form-control me-2" type="search" placeholder="Suche" aria-label="Suche">
-      <button onclick="onClickSearch()" class="btn btn-outline-primary" type="submit">Suche</button>
-    </form>
-  </div>
+ @*  <div id="jobModalTrigger" data-get-url="@Url.Action("GetJobPosting", "Home")"></div> *@
 
-  <div id="jobPostingListPartial"></div>
+ <div class="container">
+    <div class="row">
+        <div class="col">
+            <div id="jobPostingListPartial"></div>
+        </div>
+        <div class="col">
+            <div id="jobPostingDetailsPartial"></div>
+        </div>
+    </div>
+ </div>
+  
 
 <!--hier kommt ein JobModal-->
-<div id="jobModal" class="modal fade" tabindex="-1">
+@* <div id="jobModal" class="modal fade" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <img id="modalImage" class="img-fluid" src="#" alt="Firmenlogo" />
+        <img id="modalImage" class="img-fluid logo-small" src="#" alt="Firmenlogo" />
         <h5 id="jobTitle" class="modal-title"></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close align-self-start" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
                 <div class="d-flex justify-content-between">
@@ -43,42 +48,85 @@
       </div>
     </div>
   </div>
-</div>
+</div> *@
 
 @section Scripts {
-    <script>
-        $('#jobPostingListPartial').load("/home/GetJobPostingPartial");
-
-        $('#inputQuery').on('input', function () {
-            const query = $(this).val().toLowerCase();
-            onClickSearch(query);
-        })
-
-        function onClickSearch() {
-            event.preventDefault();
-            var searchQuery = $('#inputQuery').val();
-            $('#jobPostingListPartial').load("/home/GetJobPostingPartial?query=" + encodeURIComponent(searchQuery));
-        }
-
-        function showJobModal(id) {
-            $.ajax({ //ich übergebe ein Objekt
-                type: "GET",
-                url: "@Url.Action("GetJobPosting")",
-                data: {id: id},
-                success: function (data){ //wenn Funktion nur ein Mal aufgerufen wird, braucht sie keinen Namen
-                    $('#jobModal').modal('show');
-                    $('#modalImage').attr('src', `data:image/png;base64,${data.companyImage}`);
-                    $('#companyName').text(data.companyName);
-                    $('#startDate').text(data.startDate);
-                    $('#jobLocation').text(data.jobLocation);
-                    $('#jobTitle').text(data.jobTitle);
-                    $('#jobDescription').text(data.jobDescription);
-                    $('#companyWebsite').text(data.companyWebsite);
-                    $('#contactMail').text(data.contactMail);
-                    $('#contactName').text(data.contactName);
+        <script>
+            $('#jobPostingListPartial').load("/home/GetJobPostingPartial", function () {
+                //wenn geladen, lade den ersten Eintrag automatisch
+                const firstItem = $('.detailItem').first();
+                if(firstItem.length > 0) 
+                {
+                    const firstId = firstItem.data('id');
+                    loadDetail(firstId);
+                    firstItem.addClass('active');
                 }
+
+                //Klick-Handler regestrieren
+                $('.detailItem').on('click', function (e) {
+                    e.preventDefault();
+                    $('.detaiItem').removeClass('active');
+                    $(this).addClass('active');
+                    const id = $(this).data('id');
+                    loadDetail(id);
+                })
+            });
+
+            //Detailansicht laden
+            function loadDetail(id) {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GetJobPosting")",
+                    data: { id: id },
+                    success: function (data) {
+                        $('#jobPostingDetailsPartial').html(data);    
+                            // $('#companyImage').attr('src', `data:image/png;base64,${data.companyImage}`);
+                            // $('#companyName').text(data.companyName);
+                            // $('#startDate').text(data.startDate);
+                            // $('#jobLocation').text(data.jobLocation);
+                            // $('#jobTitle').text(data.jobTitle);
+                            // $('#jobDescription').text(data.jobDescription);
+                            // $('#companyWebsite').text(data.companyWebsite);
+                            // $('#contactMail').text(data.contactMail);
+                            // $('#contactName').text(data.contactName);
+                    },
+                    error: function () {
+                        $('#jobPostingDetailsPartial').html("<p>Fehler beim Laden der Details</p>")
+                    }
+                })
+            }
+
+            $('#inputQuery').on('input', function () {
+                const query = $(this).val().toLowerCase();
+                onClickSearch(query);
             })
-            $('#jobModal').modal('show')
-        }
-    </script>
+
+            function onClickSearch() {
+                event.preventDefault();
+                var searchQuery = $('#inputQuery').val();
+                $('#jobPostingDetailsPartial').load("/home/GetJobPostingPartial?query=" + encodeURIComponent(searchQuery));
+            }
+
+            // function showJobModal(id) {
+            //     $.ajax({ //ich übergebe ein Objekt
+            //         type: "GET",
+            //         url: "@Url.Action("GetJobPosting")",
+            //         data: { id: id },
+            //         success: function (data) { //wenn Funktion nur ein Mal aufgerufen wird, braucht sie keinen Namen
+            //             $('#jobModal').modal('show');
+            //             $('#modalImage').attr('src', `data:image/png;base64,${data.companyImage}`);
+            //             $('#companyName').text(data.companyName);
+            //             $('#startDate').text(data.startDate);
+            //             $('#jobLocation').text(data.jobLocation);
+            //             $('#jobTitle').text(data.jobTitle);
+            //             $('#jobDescription').text(data.jobDescription);
+            //             $('#companyWebsite').text(data.companyWebsite);
+            //             $('#contactMail').text(data.contactMail);
+            //             $('#contactName').text(data.contactName);
+            //         }
+            //     })
+            //     $('#jobModal').modal('show')
+            // }   
+                console.log("Inhalt Details:", $('#jobPostingDetailsPartial').html());
+        </script>
 }
