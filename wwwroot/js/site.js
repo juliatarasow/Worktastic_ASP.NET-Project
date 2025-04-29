@@ -23,8 +23,11 @@
         autoWidth: false
     });
 
-    // Funktion global verfügbar machen
+    const deleteJobPostingUrl = $('#deleteJobPostingConfig').data('url');
+
+    // Funktion global verfügbar 
     window.deleteJobPosting = function (jobPostingId) {
+        
         Swal.fire({
             title: "Wollen Sie diesen Eintrag wirklich löschen?",
             icon: "warning",

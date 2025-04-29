@@ -31,18 +31,6 @@ namespace Worktastic.Controllers
             return View(jobPostingsFromDb);
         }
 
-        ////einzelnen Job raussuchen aus DB für das Modal
-        //[HttpGet]
-        //public IActionResult GetJobPosting(int id)
-        //{
-        //    if (id == 0) return BadRequest();
-
-        //    var JobPostingFromDB = _context.JobPostings.SingleOrDefault(x => x.Id == id);
-        //    if (JobPostingFromDB == null) return NotFound();
-
-        //    return Ok(JobPostingFromDB);
-        //}
-
         public IActionResult GetJobPosting(int id)
         {
             var posting = _context.JobPostings.FirstOrDefault(j => j.Id == id);
@@ -51,16 +39,6 @@ namespace Worktastic.Controllers
 
             return PartialView("_JobPostingDetailsPartial", posting);
         }
-
-        //public IActionResult JobPostingDetails(int id)
-        //{
-        //    var job = _context.JobPostings.FirstOrDefault(j => j.Id == id);
-        //    if (job == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return PartialView("_JobPostingDetailsPartial", job);
-        //}
 
         //Jobposting bearbeiten
         public IActionResult CreatedEditJobPosting(int id)
@@ -152,19 +130,7 @@ namespace Worktastic.Controllers
             _context.JobPostings.Remove(job);
             _context.SaveChanges();
 
-            return RedirectToAction("Index");
+            return Ok();
         }
-
-        //public IActionResult JobPostingDetails(int id)
-        //{
-        //    var jobPostingFromDb = _context.JobPostings.Find(id);
-        //    if (jobPostingFromDb == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(jobPostingFromDb);
-        //}
-
-        
     }
 }

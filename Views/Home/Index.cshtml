@@ -12,12 +12,12 @@
 
  @*  <div id="jobModalTrigger" data-get-url="@Url.Action("GetJobPosting", "Home")"></div> *@
 
- <div class="container">
+ <div class="container shadow-medium">
     <div class="row">
-        <div class="col">
+        <div class="col p-0">
             <div id="jobPostingListPartial"></div>
         </div>
-        <div class="col">
+        <div class="col px-4 bg-white">
             <div id="jobPostingDetailsPartial"></div>
         </div>
     </div>
@@ -62,33 +62,28 @@
                     firstItem.addClass('active');
                 }
 
+                clickItem();
+            });
+
+            function clickItem() {
                 //Klick-Handler regestrieren
                 $('.detailItem').on('click', function (e) {
                     e.preventDefault();
-                    $('.detaiItem').removeClass('active');
+                    $('.detailItem').removeClass('active');
                     $(this).addClass('active');
                     const id = $(this).data('id');
                     loadDetail(id);
                 })
-            });
+            }
 
             //Detailansicht laden
             function loadDetail(id) {
                 $.ajax({
                     type: "GET",
-                    url: "@Url.Action("GetJobPosting")",
+                    url: "@Url.Action("GetJobPostingDetailsPartial")",
                     data: { id: id },
                     success: function (data) {
                         $('#jobPostingDetailsPartial').html(data);    
-                            // $('#companyImage').attr('src', `data:image/png;base64,${data.companyImage}`);
-                            // $('#companyName').text(data.companyName);
-                            // $('#startDate').text(data.startDate);
-                            // $('#jobLocation').text(data.jobLocation);
-                            // $('#jobTitle').text(data.jobTitle);
-                            // $('#jobDescription').text(data.jobDescription);
-                            // $('#companyWebsite').text(data.companyWebsite);
-                            // $('#contactMail').text(data.contactMail);
-                            // $('#contactName').text(data.contactName);
                     },
                     error: function () {
                         $('#jobPostingDetailsPartial').html("<p>Fehler beim Laden der Details</p>")
@@ -101,16 +96,26 @@
                 onClickSearch(query);
             })
 
-            function onClickSearch() {
-                event.preventDefault();
-                var searchQuery = $('#inputQuery').val();
-                $('#jobPostingDetailsPartial').load("/home/GetJobPostingPartial?query=" + encodeURIComponent(searchQuery));
-            }
+                function onClickSearch(query) {
+                    event.preventDefault();
+                    var searchQuery = $('#inputQuery').val();
+                    $('#jobPostingListPartial').load("/home/GetJobPostingPartial?query=" + encodeURIComponent(searchQuery), function () {
+                        // Erst hier nach dem Laden weitermachen
+                        const firstItem = $('.detailItem').first();
+                        if (firstItem.length > 0) {
+                            const firstId = firstItem.data('id');
+                            loadDetail(firstId);
+                            firstItem.addClass('active');
+                        }
+
+                        clickItem();
+                    });
+                }
 
             // function showJobModal(id) {
             //     $.ajax({ //ich übergebe ein Objekt
             //         type: "GET",
-            //         url: "@Url.Action("GetJobPosting")",
+            //         url: "@Url.Action("GetJobPostingJson")",
             //         data: { id: id },
             //         success: function (data) { //wenn Funktion nur ein Mal aufgerufen wird, braucht sie keinen Namen
             //             $('#jobModal').modal('show');

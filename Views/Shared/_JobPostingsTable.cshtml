@@ -1,6 +1,8 @@
 ﻿@model List<JobPostingModel>
 
- <table id="adminTable" class="table">
+ <div id="deleteJobPostingConfig" data-url="/JobPosting/DeleteJobPosting"></div>
+
+ <table id="adminTable" class="table" method="post">
         <thead>
             <tr>
                 <th scope="col">#</th>
@@ -23,13 +25,13 @@
                             @if (jobPostingModel.CompanyImage != null)
                             {
                                             <img src="data:image/png;base64,@Convert.ToBase64String(jobPostingModel.CompanyImage)" 
-                                                 class="logo-small" />
+                                                 class="logo-small logo-xs" />
                             }
                         </td>
                         <td>@jobPostingModel.StartDate.ToShortDateString()</td>
                         <td>@jobPostingModel.Salary €</td>
                         <td>@jobPostingModel.OwnerUsername</td>
-                        <td>
+                        <td class="text-nowrap">
                             @if(User.Identity.IsAuthenticated)
                             {
                                 @*a == GET-Methode*@
@@ -49,8 +51,5 @@
 
 @section Scripts
 {
-    <script>
-        const deleteJobPostingUrl = '@Url.Action("DeleteJobPosting", "JobPosting")';
-    </script>
     <script src="~/js/site.js"></script>
 }

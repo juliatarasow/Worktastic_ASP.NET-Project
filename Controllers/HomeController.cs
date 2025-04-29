@@ -24,18 +24,6 @@ namespace Worktastic.Controllers
             return View();
         }
 
-        //einzelnen Job raussuchen aus DB für das Modal
-        //[HttpGet]
-        //public IActionResult GetJobPosting(int id) 
-        //{
-        //    if (id == 0) return BadRequest();
-
-        //    var JobPostingFromDB = _context.JobPostings.SingleOrDefault(x => x.Id == id);
-        //    if(JobPostingFromDB == null) return NotFound();
-
-        //    return Ok(JobPostingFromDB);
-        //}
-
         public IActionResult GetJobPostingPartial(string query)
         {
             List<JobPostingModel> jobPostingsFromDb = new List<JobPostingModel>();
@@ -76,7 +64,7 @@ namespace Worktastic.Controllers
             return PartialView("_jobPostingListPartial", jobPostingsFromDb);
         }
 
-
+        //Funktion für Suchalgorythmus
         private static int HandleEmptyStrings(string s, string t)
         {
             if(string.IsNullOrEmpty(s))
@@ -99,7 +87,8 @@ namespace Worktastic.Controllers
 
             return -1;
         }
-
+        
+        //Funktion für Suchalgorythmus
         //s = source; t = target
         public static int LevenshteinDistance(string s, string t)
         {
@@ -144,29 +133,29 @@ namespace Worktastic.Controllers
             return matrix[s.Length, t.Length];
         }
 
+        //Partial für die Detailansicht
+        [HttpGet]
+        public IActionResult GetJobPostingDetailsPartial(int id)
+        {
+            if (id == 0) return BadRequest();
+
+            var jobPostingFromDb = _context.JobPostings.SingleOrDefault(x => x.Id == id);
+            if (jobPostingFromDb == null) return NotFound();
+
+            return PartialView("_JobPostingDetailsPartial", jobPostingFromDb);
+        }
+
         //einzelnen Job raussuchen aus DB für das Modal
         //[HttpGet]
-        //public IActionResult GetJobPosting(int id) 
+        //public IActionResult GetJobPostingJson(int id)
         //{
         //    if (id == 0) return BadRequest();
 
         //    var JobPostingFromDB = _context.JobPostings.SingleOrDefault(x => x.Id == id);
-        //    if(JobPostingFromDB == null) return NotFound();
+        //    if (JobPostingFromDB == null) return NotFound();
 
-        //    return Ok(JobPostingFromDB);
+        //    return Ok(JobPostingFromDB); //gibt JSON zurück
         //}
-
-        //einzelnen Job raussuchen aus DB für das Modal
-        [HttpGet]
-        public IActionResult GetJobPosting(int id) 
-        {
-            if (id == 0) return BadRequest();
-
-            var JobPostingFromDB = _context.JobPostings.SingleOrDefault(x => x.Id == id);
-            if(JobPostingFromDB == null) return NotFound();
-
-            return Ok(JobPostingFromDB);
-        }
 
         public IActionResult Privacy()
         {
